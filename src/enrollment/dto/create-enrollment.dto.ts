@@ -49,7 +49,7 @@ export class CreateEnrollmentDto {
     message: 'El ID del curso ofrecido debe ser un UUID válido',
   })
   @IsNotEmpty({ message: 'El ID del curso ofrecido es obligatorio' })
-  courseOfferedId: string;
+  careerOfferedId: string;
 
   @IsNumber({}, { message: 'La tarifa de inscripción debe ser un número' })
   @IsNotEmpty({ message: 'La tarifa de inscripción es obligatoria' })
