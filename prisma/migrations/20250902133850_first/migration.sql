@@ -1,4 +1,13 @@
 -- CreateTable
+CREATE TABLE "User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "Student" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "dni" TEXT NOT NULL,
@@ -43,6 +52,9 @@ CREATE TABLE "Enrollment" (
     CONSTRAINT "Enrollment_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Enrollment_courseOfferedId_fkey" FOREIGN KEY ("courseOfferedId") REFERENCES "CourseOffered" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Student_dni_key" ON "Student"("dni");
