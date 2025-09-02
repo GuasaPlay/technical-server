@@ -1,0 +1,152 @@
+import { PrismaClient } from '@prisma/client';
+
+export async function seedEnrollments(prisma: PrismaClient) {
+  const enrollments = [
+    {
+      id: '1',
+      status: 'APPROVED' as const,
+      enrollmentFee: 150.0,
+      createdAt: new Date('2024-01-15T10:00:00Z'),
+      updatedAt: new Date('2024-01-16T14:30:00Z'),
+      studentId: '1',
+      courseOfferedId: '1',
+    },
+    {
+      id: '2',
+      status: 'PENDING' as const,
+      enrollmentFee: 180.0,
+      createdAt: new Date('2024-01-16T09:15:00Z'),
+      updatedAt: new Date('2024-01-16T09:15:00Z'),
+      studentId: '2',
+      courseOfferedId: '2',
+    },
+    {
+      id: '3',
+      status: 'APPROVED' as const,
+      enrollmentFee: 200.0,
+      createdAt: new Date('2024-01-17T11:30:00Z'),
+      updatedAt: new Date('2024-01-18T16:45:00Z'),
+      studentId: '3',
+      courseOfferedId: '3',
+    },
+    {
+      id: '4',
+      status: 'REJECTED' as const,
+      enrollmentFee: 170.0,
+      createdAt: new Date('2024-01-18T08:20:00Z'),
+      updatedAt: new Date('2024-01-19T12:10:00Z'),
+      studentId: '4',
+      courseOfferedId: '1',
+    },
+    {
+      id: '5',
+      status: 'APPROVED' as const,
+      enrollmentFee: 190.0,
+      createdAt: new Date('2024-01-19T13:45:00Z'),
+      updatedAt: new Date('2024-01-20T10:20:00Z'),
+      studentId: '5',
+      courseOfferedId: '4',
+    },
+    {
+      id: '6',
+      status: 'PENDING' as const,
+      enrollmentFee: 160.0,
+      createdAt: new Date('2024-01-20T15:10:00Z'),
+      updatedAt: new Date('2024-01-20T15:10:00Z'),
+      studentId: '6',
+      courseOfferedId: '5',
+    },
+    {
+      id: '7',
+      status: 'APPROVED' as const,
+      enrollmentFee: 210.0,
+      createdAt: new Date('2024-01-21T12:35:00Z'),
+      updatedAt: new Date('2024-01-22T09:15:00Z'),
+      studentId: '7',
+      courseOfferedId: '6',
+    },
+    {
+      id: '8',
+      status: 'CANCELLED' as const,
+      enrollmentFee: 175.0,
+      createdAt: new Date('2024-01-22T14:20:00Z'),
+      updatedAt: new Date('2024-01-23T11:40:00Z'),
+      studentId: '8',
+      courseOfferedId: '2',
+    },
+    {
+      id: '9',
+      status: 'APPROVED' as const,
+      enrollmentFee: 185.0,
+      createdAt: new Date('2024-01-23T10:50:00Z'),
+      updatedAt: new Date('2024-01-24T13:25:00Z'),
+      studentId: '9',
+      courseOfferedId: '7',
+    },
+    {
+      id: '10',
+      status: 'COMPLETED' as const,
+      enrollmentFee: 195.0,
+      createdAt: new Date('2024-01-24T16:15:00Z'),
+      updatedAt: new Date('2024-02-15T14:30:00Z'),
+      studentId: '10',
+      courseOfferedId: '8',
+    },
+    {
+      id: '11',
+      status: 'PENDING' as const,
+      enrollmentFee: 165.0,
+      createdAt: new Date('2024-01-25T11:25:00Z'),
+      updatedAt: new Date('2024-01-25T11:25:00Z'),
+      studentId: '11',
+      courseOfferedId: '9',
+    },
+    {
+      id: '12',
+      status: 'APPROVED' as const,
+      enrollmentFee: 220.0,
+      createdAt: new Date('2024-01-26T08:40:00Z'),
+      updatedAt: new Date('2024-01-27T15:55:00Z'),
+      studentId: '12',
+      courseOfferedId: '10',
+    },
+    // Algunos estudiantes con múltiples inscripciones
+    {
+      id: '13',
+      status: 'APPROVED' as const,
+      enrollmentFee: 180.0,
+      createdAt: new Date('2024-01-27T12:10:00Z'),
+      updatedAt: new Date('2024-01-28T10:30:00Z'),
+      studentId: '1',
+      courseOfferedId: '3',
+    },
+    {
+      id: '14',
+      status: 'PENDING' as const,
+      enrollmentFee: 200.0,
+      createdAt: new Date('2024-01-28T14:45:00Z'),
+      updatedAt: new Date('2024-01-28T14:45:00Z'),
+      studentId: '2',
+      courseOfferedId: '5',
+    },
+    {
+      id: '15',
+      status: 'APPROVED' as const,
+      enrollmentFee: 190.0,
+      createdAt: new Date('2024-01-29T09:20:00Z'),
+      updatedAt: new Date('2024-01-30T16:40:00Z'),
+      studentId: '3',
+      courseOfferedId: '7',
+    },
+  ];
+
+  for (const enrollmentData of enrollments) {
+    await prisma.enrollment.upsert({
+      where: { id: enrollmentData.id },
+      update: {},
+      create: enrollmentData,
+    });
+  }
+
+  console.log(`✅ Created ${enrollments.length} enrollments`);
+}

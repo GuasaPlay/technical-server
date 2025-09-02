@@ -7,14 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Student {
   id             String       @id @default(uuid())
   dni            String       @unique
@@ -38,7 +30,7 @@ model OriginSchool {
   students  Student[]
 }
 
-model CourseOffered {
+model CareerOffered {
   id               String       @id @default(uuid())
   name             String       @unique
   originalCapacity Int
@@ -51,15 +43,15 @@ model CourseOffered {
 model Enrollment {
   id              String           @id @default(uuid())
   status          EnrollmentStatus @default(PENDING)
-  enrollmentFee   Decimal
+  enrollmentFee   Float
   createdAt       DateTime
   updatedAt       DateTime
   studentId       String
-  courseOfferedId String
+  careerOfferedId String
   student         Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  courseOffered   CourseOffered    @relation(fields: [courseOfferedId], references: [id], onDelete: Cascade)
+  careerOffered   CareerOffered    @relation(fields: [careerOfferedId], references: [id], onDelete: Cascade)
 
-  @@unique([studentId, courseOfferedId])
+  @@unique([studentId, careerOfferedId])
 }
 
 enum EnrollmentStatus {

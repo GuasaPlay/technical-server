@@ -1,11 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 
 @Injectable()
 export class EnrollmentService {
+  constructor(private readonly prisma: PrismaService) {}
+
   create(createEnrollmentDto: CreateEnrollmentDto) {
-    return 'This action adds a new enrollment';
+    try {
+      const {
+        dni,
+        names,
+        surnames,
+        email,
+        originSchoolId,
+        courseOfferedId,
+        enrollmentFee,
+      } = createEnrollmentDto;
+    } catch (error) {
+      console.log(error);
+
+      throw new InternalServerErrorException('Ocurrió un error inesperado');
+    }
   }
 
   findAll() {
