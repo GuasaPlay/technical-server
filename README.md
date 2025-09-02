@@ -1,6 +1,6 @@
-# Sistema de Gestión de Matrículas
+# Sistema de Gestión de Inscripciones
 
-API REST desarrollada con NestJS para la gestión de matrículas estudiantiles. Este sistema permite administrar estudiantes, escuelas de origen, carreras ofrecidas y el proceso completo de matrícula.
+API REST desarrollada con NestJS para la gestión de inscripciones estudiantiles. Este sistema permite administrar estudiantes, escuelas de origen, carreras ofrecidas y el proceso completo de inscripción.
 
 ## Tecnologías Utilizadas
 
