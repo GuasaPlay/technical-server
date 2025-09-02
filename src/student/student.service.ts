@@ -15,6 +15,7 @@ export class StudentService {
           names: true,
           surnames: true,
           email: true,
+          originSchoolId: true,
           enrollments: {
             select: {
               id: true,

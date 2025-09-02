@@ -15,12 +15,28 @@ export class EnrollmentService {
   async create(createEnrollmentDto: CreateEnrollmentDto) {
     const { careerOfferedId, originSchoolId, dni } = createEnrollmentDto;
 
-    const student = await this.prisma.student.findUnique({
+    const existingStudent = await this.prisma.student.findUnique({
       where: { dni },
       select: { id: true },
     });
 
-    if (student) throw new NotFoundException('Estudiante ya existe');
+    // Verificar si ya existe un enrollment para este estudiante y carrera
+    if (existingStudent) {
+      const existingEnrollment = await this.prisma.enrollment.findUnique({
+        where: {
+          studentId_careerOfferedId: {
+            studentId: existingStudent.id,
+            careerOfferedId,
+          },
+        },
+      });
+
+      if (existingEnrollment) {
+        throw new NotFoundException(
+          'El estudiante ya está matriculado en esta carrera',
+        );
+      }
+    }
 
     const originSchool = await this.prisma.originSchool.findUnique({
       where: { id: originSchoolId },
@@ -42,18 +58,35 @@ export class EnrollmentService {
       throw new NotFoundException('La carrera no tiene cupos disponibles');
 
     try {
-      const studentId = uuid();
+      let studentId: string;
+      let studentOperation;
 
-      const studentToInsert = this.prisma.student.create({
-        data: {
-          id: studentId,
-          dni: createEnrollmentDto.dni,
-          names: createEnrollmentDto.names,
-          surnames: createEnrollmentDto.surnames,
-          email: createEnrollmentDto.email,
-          originSchoolId: createEnrollmentDto.originSchoolId,
-        },
-      });
+      if (existingStudent) {
+        // Si el estudiante existe, actualizamos sus datos
+        studentId = existingStudent.id;
+        studentOperation = this.prisma.student.update({
+          where: { id: studentId },
+          data: {
+            names: createEnrollmentDto.names,
+            surnames: createEnrollmentDto.surnames,
+            email: createEnrollmentDto.email,
+            originSchoolId: createEnrollmentDto.originSchoolId,
+          },
+        });
+      } else {
+        // Si el estudiante no existe, creamos uno nuevo
+        studentId = uuid();
+        studentOperation = this.prisma.student.create({
+          data: {
+            id: studentId,
+            dni: createEnrollmentDto.dni,
+            names: createEnrollmentDto.names,
+            surnames: createEnrollmentDto.surnames,
+            email: createEnrollmentDto.email,
+            originSchoolId: createEnrollmentDto.originSchoolId,
+          },
+        });
+      }
 
       const baseEnrollmentFee = 100;
 
@@ -80,7 +113,7 @@ export class EnrollmentService {
       });
 
       await this.prisma.$transaction([
-        studentToInsert,
+        studentOperation,
         enrollmentToInsert,
         updateCareerCapacity,
       ]);
