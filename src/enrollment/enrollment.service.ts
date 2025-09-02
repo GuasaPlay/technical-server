@@ -32,11 +32,14 @@ export class EnrollmentService {
 
     const careerOffered = await this.prisma.careerOffered.findUnique({
       where: { id: careerOfferedId },
-      select: { id: true },
+      select: { id: true, currentCapacity: true },
     });
 
     if (!careerOffered)
       throw new NotFoundException('La carrera ofrecida no existe');
+
+    if (careerOffered.currentCapacity <= 0)
+      throw new NotFoundException('La carrera no tiene cupos disponibles');
 
     try {
       const studentId = uuid();
@@ -67,7 +70,20 @@ export class EnrollmentService {
         },
       });
 
-      await this.prisma.$transaction([studentToInsert, enrollmentToInsert]);
+      const updateCareerCapacity = this.prisma.careerOffered.update({
+        where: { id: careerOfferedId },
+        data: {
+          currentCapacity: {
+            decrement: 1,
+          },
+        },
+      });
+
+      await this.prisma.$transaction([
+        studentToInsert,
+        enrollmentToInsert,
+        updateCareerCapacity,
+      ]);
 
       return { message: 'Matrícula creada correctamente' };
     } catch (error) {
