@@ -12,6 +12,7 @@ export class OriginSchoolService {
           id: true,
           name: true,
           type: true,
+          city: true,
         },
       });
       return originSchools;

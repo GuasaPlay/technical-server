@@ -13,7 +13,14 @@ export class EnrollmentService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createEnrollmentDto: CreateEnrollmentDto) {
-    const { careerOfferedId, originSchoolId } = createEnrollmentDto;
+    const { careerOfferedId, originSchoolId, dni } = createEnrollmentDto;
+
+    const student = await this.prisma.student.findUnique({
+      where: { dni },
+      select: { id: true },
+    });
+
+    if (student) throw new NotFoundException('Estudiante ya existe');
 
     const originSchool = await this.prisma.originSchool.findUnique({
       where: { id: originSchoolId },
@@ -61,6 +68,8 @@ export class EnrollmentService {
       });
 
       await this.prisma.$transaction([studentToInsert, enrollmentToInsert]);
+
+      return { message: 'Matrícula creada correctamente' };
     } catch (error) {
       console.log(error);
 

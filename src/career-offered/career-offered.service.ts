@@ -11,6 +11,7 @@ export class CareerOfferedService {
         select: {
           id: true,
           name: true,
+          currentCapacity: true,
         },
       });
       return careers;
