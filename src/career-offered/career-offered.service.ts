@@ -22,4 +22,29 @@ export class CareerOfferedService {
       );
     }
   }
+
+  async findCareersWithStudentCount() {
+    try {
+      const careers = await this.prisma.careerOffered.findMany({
+        select: {
+          name: true,
+          _count: {
+            select: {
+              enrollments: true,
+            },
+          },
+        },
+      });
+
+      return careers.map((career) => ({
+        name: career.name,
+        studentsCount: career._count.enrollments,
+      }));
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'Ocurrió un error al obtener las carreras con el número de estudiantes',
+      );
+    }
+  }
 }

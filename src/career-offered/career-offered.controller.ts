@@ -9,4 +9,9 @@ export class CareerOfferedController {
   findAll() {
     return this.careerOfferedService.findAll();
   }
+
+  @Get('with-student-count')
+  findCareersWithStudentCount() {
+    return this.careerOfferedService.findCareersWithStudentCount();
+  }
 }
