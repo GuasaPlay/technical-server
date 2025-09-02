@@ -3,13 +3,61 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-model Person {
-  id     String  @id @default(uuid())
-  email  String  @unique
-  name   String
-  status Boolean
+model Student {
+  id             String       @id @default(uuid())
+  dni            String       @unique
+  names          String
+  surnames       String
+  email          String       @unique
+  originSchoolId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  originSchool   OriginSchool @relation(fields: [originSchoolId], references: [id])
+  enrollments    Enrollment[]
+}
+
+model OriginSchool {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  city      String
+  type      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  students  Student[]
+}
+
+model CourseOffered {
+  id               String       @id @default(uuid())
+  name             String       @unique
+  originalCapacity Int
+  currentCapacity  Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  enrollments      Enrollment[]
+}
+
+model Enrollment {
+  id              String           @id @default(uuid())
+  status          EnrollmentStatus @default(PENDING)
+  enrollmentFee   Decimal
+  createdAt       DateTime
+  updatedAt       DateTime
+  studentId       String
+  courseOfferedId String
+  student         Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseOffered   CourseOffered    @relation(fields: [courseOfferedId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseOfferedId])
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
 }
